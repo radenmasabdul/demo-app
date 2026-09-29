@@ -1,0 +1,33 @@
+<div hlmTableContainer class="w-full overflow-x-auto rounded-sm border bg-card shadow-sm">
+  <table hlmTable class="w-full min-w-175">
+    <thead hlmTableHeader>
+      <tr hlmTableRow>
+        @for (column of columns(); track column.key) {
+        <th hlmTableHead class="text-center">
+          {{ column.label }}
+        </th>
+        }
+      </tr>
+    </thead>
+
+    <tbody hlmTableBody>
+      @for (row of data(); track $index) {
+      <tr hlmTableRow>
+        @for (column of columns(); track column.key) {
+        <td hlmTableCell class="text-center">
+          @if (column.type === 'action') {
+          <div class="flex items-center justify-center gap-4">
+            <app-button type="edit" (click)="actionClick.emit({ action: 'edit', row })" />
+
+            <app-button type="delete" (click)="actionClick.emit({ action: 'delete', row })" />
+          </div>
+          } @else {
+          {{ row[column.key] }}
+          }
+        </td>
+        }
+      </tr>
+      }
+    </tbody>
+  </table>
+</div>
