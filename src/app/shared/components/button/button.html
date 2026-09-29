@@ -1,0 +1,20 @@
+@if (type() === 'add') {
+  <button hlmBtn class="bg-green-600 text-white hover:bg-green-700">
+    <ng-icon name="lucidePlus" />
+    Add New
+  </button>
+}
+
+@if (type() === 'edit') {
+  <button hlmBtn class="bg-blue-600 text-white hover:bg-blue-700">
+    <ng-icon name="lucidePencil" />
+    Edit
+  </button>
+}
+
+@if (type() === 'delete') {
+  <button hlmBtn class="bg-red-600 text-white hover:bg-red-700">
+    <ng-icon name="lucideTrash" />
+    Delete
+  </button>
+}
