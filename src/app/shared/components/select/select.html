@@ -1,0 +1,19 @@
+<hlm-select [itemToString]="itemToString">
+  <hlm-select-trigger class="w-full">
+    <hlm-select-value [placeholder]="placeholder()" />
+  </hlm-select-trigger>
+
+  <hlm-select-content *hlmSelectPortal>
+    <hlm-select-group>
+      @if (label()) {
+      <hlm-select-label>{{ label() }}</hlm-select-label>
+      }
+
+      @for (item of items(); track item.value) {
+      <hlm-select-item [value]="item.value">
+        {{ item.label }}
+      </hlm-select-item>
+      }
+    </hlm-select-group>
+  </hlm-select-content>
+</hlm-select>
