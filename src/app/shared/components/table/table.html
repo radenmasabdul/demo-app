@@ -30,4 +30,14 @@
       }
     </tbody>
   </table>
+
+  <div class="border-t px-4 py-3">
+    <app-pagination
+      [page]="page()"
+      [pageSize]="pageSize()"
+      [totalItems]="totalItems()"
+      (pageChange)="pageChange.emit($event)"
+      (pageSizeChange)="pageSizeChange.emit($event)"
+    />
+  </div>
 </div>

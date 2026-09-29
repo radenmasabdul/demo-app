@@ -1,0 +1,7 @@
+<hlm-numbered-pagination
+  [currentPage]="page()"
+  [itemsPerPage]="pageSize()"
+  [totalItems]="totalItems()"
+  (currentPageChange)="pageChange.emit($event)"
+  (itemsPerPageChange)="pageSizeChange.emit($event)"
+/>
