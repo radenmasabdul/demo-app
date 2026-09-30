@@ -1,0 +1,119 @@
+<hlm-dialog>
+  <app-button type="add" hlmDialogTrigger />
+
+  <hlm-dialog-content
+    *hlmDialogPortal="let ctx"
+    class="w-[calc(100vw-2rem)]! max-w-none! sm:w-[90vw]! sm:max-w-2xl! max-h-[90vh] overflow-hidden rounded-lg shadow-xl"
+  >
+    <hlm-dialog-header>
+      <h3 hlmDialogTitle>{{ title() }}</h3>
+
+      <p hlmDialogDescription>
+        Fill in the information below.
+      </p>
+    </hlm-dialog-header>
+
+    <form
+      [formGroup]="formGroup()"
+      (ngSubmit)="submit(ctx)"
+      class="flex flex-col"
+    >
+      <hlm-field-group>
+        <div class="no-scrollbar max-h-[55vh] overflow-y-auto sm:max-h-[60vh] space-y-4">
+          @for (field of inputs(); track field.key) {
+            <hlm-field>
+              <label hlmFieldLabel [for]="field.key">
+                {{ field.label }}
+              </label>
+              
+              @if (
+                field.type !== 'select' &&
+                field.type !== 'textarea' &&
+                field.type !== 'checkbox' &&
+                field.type !== 'radio'
+              ) {
+                <input
+                  hlmInput
+                  [id]="field.key"
+                  [type]="field.type"
+                  [placeholder]="field.placeholder || ''"
+                  [formControlName]="field.key"
+                  class="w-full"
+                />
+              }
+              
+              @if (field.type === 'select') {
+                <select
+                  hlmInput
+                  [id]="field.key"
+                  [formControlName]="field.key"
+                  class="w-full rounded-md border border-input bg-background px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-ring"
+                >
+                  <option value="" disabled selected hidden>
+                    {{ field.placeholder || 'Pilih opsi...' }}
+                  </option>
+                
+                  @for (opt of field.options; track opt.value) {
+                    <option [value]="opt.value">
+                      {{ opt.label }}
+                    </option>
+                  }
+                </select>
+              }
+              
+              @if (field.type === 'textarea') {
+                <textarea
+                  hlmInput
+                  [id]="field.key"
+                  [placeholder]="field.placeholder || ''"
+                  [formControlName]="field.key"
+                  class="min-h-20 w-full"
+                >
+                </textarea>
+              }
+              
+              @if (field.type === 'checkbox') {
+                <div class="flex items-center gap-2 pt-1">
+                  <input
+                    type="checkbox"
+                    [id]="field.key"
+                    [formControlName]="field.key"
+                    class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary" 
+                  />
+                  
+                  <span class="text-xs text-muted-foreground">
+                    Activate this data
+                  </span>
+                </div>
+              }
+              
+              @if (formGroup().get(field.key); as ctrl) {
+                @if (ctrl.invalid && submitted()) {
+                  <p class="text-xs text-destructive">
+                    @if (ctrl.hasError('required')) {
+                      {{ field.label }} is required.
+                    } @else if (ctrl.hasError('email')) {
+                      Please enter a valid email address.
+                    } @else if (ctrl.hasError('minlength')) {
+                      {{ field.label }} must be at least
+                      {{ ctrl.getError('minlength').requiredLength }} characters.
+                    } @else if (ctrl.hasError('pattern')) {
+                      Invalid {{ field.label }} format.
+                    } @else {
+                      {{ field.label }} is invalid.
+                    }
+                  </p>
+                }
+              }
+            </hlm-field>
+          }
+        </div>
+      </hlm-field-group>
+
+      <hlm-dialog-footer class="flex flex-col-reverse gap-2 sm:flex-row sm:justify-end">
+        <app-button type="cancel" (click)="cancel(ctx)" />
+        <app-button type="save" />
+      </hlm-dialog-footer>
+    </form>
+  </hlm-dialog-content>
+</hlm-dialog>
