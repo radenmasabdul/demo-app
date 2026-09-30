@@ -1,4 +1,4 @@
-import { HttpClient } from "@angular/common/http";
+import { HttpClient, HttpParams } from "@angular/common/http";
 import { inject, Injectable } from "@angular/core";
 import { Observable } from "rxjs";
 import { environment } from "../../../../environments/environment.development";
@@ -12,8 +12,21 @@ export class UserService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/users`;
 
-  getUsers(): Observable<ApiResponse<User[]>> {
-    return this.http.get<ApiResponse<User[]>>(this.apiUrl);
+  getUsers(
+    search: string,
+    role: string,
+    status: string,
+    page: number,
+    size: number,
+  ): Observable<ApiResponse<User[]>> {
+    const params = new HttpParams()
+      .set('search', search)
+      .set('role', role)
+      .set('status', status)
+      .set('page', page)
+      .set('size', size);
+
+    return this.http.get<ApiResponse<User[]>>(this.apiUrl, { params });
   }
 
   getUserById(id: string): Observable<ApiResponse<User>> {
