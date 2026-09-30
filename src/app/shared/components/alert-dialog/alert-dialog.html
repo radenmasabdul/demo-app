@@ -1,0 +1,37 @@
+<hlm-alert-dialog>
+  <button
+    #trigger
+    type="button"
+    hlmAlertDialogTrigger
+    class="hidden"
+    aria-hidden="true"
+    tabindex="-1">
+  </button>
+
+  <hlm-alert-dialog-content *hlmAlertDialogPortal="let ctx">
+    <hlm-alert-dialog-header>
+      <h2 hlmAlertDialogTitle>
+        {{ dialog()?.title }}
+      </h2>
+
+      <p hlmAlertDialogDescription>
+        {{ dialog()?.description }}
+      </p>
+    </hlm-alert-dialog-header>
+
+    <hlm-alert-dialog-footer>
+      <button hlmAlertDialogCancel class="btn-cancel">
+        {{ dialog()?.cancelText }}
+      </button>
+
+      <button
+        hlmAlertDialogAction
+        variant="destructive"
+        (click)="confirm(ctx)"
+        class="btn-delete"
+      >
+        {{ dialog()?.confirmText }}
+      </button>
+    </hlm-alert-dialog-footer>
+  </hlm-alert-dialog-content>
+</hlm-alert-dialog>
