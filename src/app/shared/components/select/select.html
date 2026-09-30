@@ -1,4 +1,4 @@
-<hlm-select [itemToString]="itemToString">
+<hlm-select [itemToString]="itemToString" (valueChange)="onValueChange($event)">
   <hlm-select-trigger class="w-full">
     <hlm-select-value [placeholder]="placeholder()" />
   </hlm-select-trigger>

@@ -17,7 +17,7 @@
         <td hlmTableCell class="text-center">
           @if (column.type === 'action') {
           <div class="flex items-center justify-center gap-4">
-            <app-button type="edit" (click)="actionClick.emit({ action: 'edit', row })" />
+            <app-button type="view" (click)="actionClick.emit({ action: 'view', row })" />
 
             <app-button type="delete" (click)="actionClick.emit({ action: 'delete', row })" />
           </div>

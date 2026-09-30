@@ -1,20 +1,31 @@
 @if (type() === 'add') {
-  <button hlmBtn class="bg-green-600 text-white hover:bg-green-700">
-    <ng-icon name="lucidePlus" />
-    Add New
-  </button>
+<button hlmBtn
+  class="inline-flex items-center gap-2 bg-emerald-600 text-white shadow-sm hover:bg-emerald-500 active:scale-95 transition-all duration-200 ease-in-out font-medium">
+  <ng-icon name="lucidePlus" class="text-lg" />
+  Add New
+</button>
+}
+
+@if (type() === 'view') {
+<button hlmBtn
+  class="inline-flex items-center gap-2 bg-sky-600 text-white shadow-sm hover:bg-sky-500 active:scale-95 transition-all duration-200 ease-in-out font-medium">
+  <ng-icon name="lucideEye" class="text-lg" />
+  View
+</button>
 }
 
 @if (type() === 'edit') {
-  <button hlmBtn class="bg-blue-600 text-white hover:bg-blue-700">
-    <ng-icon name="lucidePencil" />
-    Edit
-  </button>
+<button hlmBtn
+  class="inline-flex items-center gap-2 bg-amber-600 text-white shadow-sm hover:bg-amber-500 active:scale-95 transition-all duration-200 ease-in-out font-medium">
+  <ng-icon name="lucidePencil" class="text-lg" />
+  Edit
+</button>
 }
 
 @if (type() === 'delete') {
-  <button hlmBtn class="bg-red-600 text-white hover:bg-red-700">
-    <ng-icon name="lucideTrash" />
-    Delete
-  </button>
+<button hlmBtn
+  class="inline-flex items-center gap-2 bg-rose-600 text-white shadow-sm hover:bg-rose-500 active:scale-95 transition-all duration-200 ease-in-out font-medium">
+  <ng-icon name="lucideTrash" class="text-lg" />
+  Delete
+</button>
 }

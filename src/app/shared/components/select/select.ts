@@ -1,4 +1,4 @@
-import { Component, input } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { HlmSelectImports } from '@spartan-ng/helm/select';
 
 export interface SelectItem {
@@ -18,5 +18,11 @@ export class Select {
   placeholder = input('Select...');
   label = input<string>();
 
+  valueChange = output<string>();
+
   itemToString = (value: string) => this.items().find((item) => item.value === value)?.label || '';
+
+  onValueChange(value: string | null | undefined) {
+    this.valueChange.emit(value ?? '');
+  }
 }

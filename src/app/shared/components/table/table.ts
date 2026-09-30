@@ -12,7 +12,7 @@ export interface TableColumn {
 }
 
 export interface TableAction {
-  action: 'edit' | 'delete';
+  action: 'view' | 'delete';
   row: any;
 }
 
