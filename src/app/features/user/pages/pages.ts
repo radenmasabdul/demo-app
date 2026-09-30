@@ -1,20 +1,27 @@
 import { Component, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
+import { Router } from '@angular/router';
 import { UserService } from '../services/user.service';
-import { combineLatest, map, switchMap, tap } from 'rxjs';
-import { AppButtonGeneral } from '../../../shared/components/button/button';
+import { catchError, combineLatest, map, of, switchMap, tap } from 'rxjs';
 import { Search } from '../../../shared/components/search/search';
 import { Select } from '../../../shared/components/select/select';
 import { Table, TableAction } from '../../../shared/components/table/table';
+import { CreateDialog } from '../components/create-dialog/create-dialog';
+import { ApiState } from '../../../shared/components/api-state/api-state';
+import { AlertService } from '../../../core/services/alert.service';
+import { AlertDialogService } from '../../../core/services/alert-dialog.service';
 
 @Component({
   selector: 'app-pages',
-  imports: [AppButtonGeneral, Search, Select, Table],
+  imports: [Search, Select, Table, CreateDialog, ApiState],
   templateUrl: './pages.html',
   styleUrl: './pages.css',
 })
 export class UserPage {
   private readonly userService = inject(UserService);
+  private readonly alertService = inject(AlertService);
+  private readonly alertDialogService = inject(AlertDialogService);
+  private readonly router = inject(Router);
 
   public readonly search = signal('');
   public readonly role = signal('');
@@ -22,6 +29,8 @@ export class UserPage {
   public readonly page = signal(0);
   public readonly pageSize = signal(10);
   public readonly totalItems = signal(0);
+  public readonly isLoading = signal(true);
+  public readonly isError = signal(false);
 
   roles = [
     { label: 'All', value: '' },
@@ -51,15 +60,17 @@ export class UserPage {
       toObservable(this.status),
       toObservable(this.page),
       toObservable(this.pageSize),
+      toObservable(this.userService.refreshTrigger),
     ]).pipe(
+      tap(() => {
+        this.isLoading.set(true);
+        this.isError.set(false);
+      }),
       switchMap(([search, role, status, page, pageSize]) =>
         this.userService.getUsers(search, role, status, page, pageSize),
       ),
       tap((res) => {
         const data = res.data;
-
-        console.log('API response:', res);
-        console.log('API data:', data);
 
         this.page.set(res.page);
         this.pageSize.set(res.size);
@@ -67,10 +78,18 @@ export class UserPage {
       }),
       map((res) => {
         const users = res.data;
-
-        console.log('Mapped users:', users);
-
         return users;
+      }),
+      tap(() => {
+        this.isLoading.set(false);
+      }),
+      catchError((error) => {
+        this.isLoading.set(false);
+        this.isError.set(true);
+
+        this.alertService.error(error?.error?.message ?? 'Failed to load users.');
+
+        return of([]);
       }),
     ),
     {
@@ -78,41 +97,71 @@ export class UserPage {
     },
   );
 
-  onSearchChange(search: string) {
-    console.log('Search:', search);
+  deleteUser(id: string) {
+    this.userService.deleteUser(id).subscribe({
+      next: (response) => {
+        console.log('User deleted:', response);
 
+        this.alertService.success(response.message);
+
+        this.userService.triggerRefresh();
+      },
+
+      error: (error) => {
+        console.error('Failed to delete user:', error);
+
+        this.alertService.error(error?.error?.message ?? 'Failed to delete user.');
+      },
+    });
+  }
+
+  onSearchChange(search: string) {
     this.search.set(search);
     this.page.set(0);
   }
 
   onRoleChange(role: string) {
-    console.log('Role:', role);
-
     this.role.set(role);
     this.page.set(0);
   }
 
   onStatusChange(status: string) {
-    console.log('Status:', status);
-
     this.status.set(status);
     this.page.set(0);
   }
 
+  confirmDeleteUser(id: string) {
+    this.alertDialogService.open(
+      {
+        title: 'Delete user?',
+        description:
+          'This action cannot be undone. This will permanently delete this user from the system.',
+        confirmText: 'Delete',
+        cancelText: 'Cancel',
+      },
+      () => {
+        this.deleteUser(id);
+      },
+    );
+  }
+
   onTableAction(event: TableAction) {
-    console.log('a', event.action);
-    console.log('b', event.row);
+    if (event.action === 'view') {
+      this.router.navigate(['/users', event.row.id]);
+      return;
+    }
+
+    if (event.action === 'delete') {
+      this.confirmDeleteUser(event.row.id);
+      return;
+    }
   }
 
   onPageChange(page: number) {
-    console.log('Page:', page);
-
     this.page.set(page);
   }
 
   onPageSizeChange(size: number) {
-    console.log('Page size:', size);
-
     this.pageSize.set(size);
     this.page.set(0);
   }

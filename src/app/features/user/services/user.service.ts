@@ -1,5 +1,5 @@
 import { HttpClient, HttpParams } from "@angular/common/http";
-import { inject, Injectable } from "@angular/core";
+import { inject, Injectable, signal } from "@angular/core";
 import { Observable } from "rxjs";
 import { environment } from "../../../../environments/environment.development";
 import { ApiResponse } from "../../../core/models/api-response.model";
@@ -11,6 +11,12 @@ import { User } from "../models/user.model";
 export class UserService {
   private readonly http = inject(HttpClient);
   private readonly apiUrl = `${environment.apiUrl}/users`;
+
+  public readonly refreshTrigger = signal(0);
+
+  triggerRefresh() {
+    this.refreshTrigger.update((v) => v + 1);
+  }
 
   getUsers(
     search: string,
