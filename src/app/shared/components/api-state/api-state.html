@@ -1,0 +1,25 @@
+@if (isLoading()) {
+  <app-skeleton [count]="skeletonCount()" />
+} @else if (isError()) {
+  <div class="flex flex-col items-center justify-center py-20 text-center">
+    <p class="font-medium text-muted-foreground">
+      {{ errorTitle() }}
+    </p>
+    
+    <p class="mt-1 text-sm text-muted-foreground">
+      {{ errorDescription() }}
+    </p>
+  </div>
+} @else if (isEmpty()) {
+  <div class="flex flex-col items-center justify-center py-20 text-center">
+    <p class="font-medium text-foreground">
+      {{ emptyTitle() }}
+    </p>
+    
+    <p class="mt-1 text-sm text-muted-foreground">
+      {{ emptyDescription() }}
+    </p>
+  </div>
+} @else {
+  <ng-content />
+}
