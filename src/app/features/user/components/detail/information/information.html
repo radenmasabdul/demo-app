@@ -1,0 +1,132 @@
+<div class="grid items-start gap-6 md:grid-cols-[320px_minmax(0,1fr)]">
+  <aside class="flex flex-col items-center gap-4 rounded-xl border bg-card p-6 text-center">
+    <div class="grid size-28 place-items-center overflow-hidden rounded-full bg-primary/10 text-primary ring-1 ring-border">
+      @if (user().profileImageUrl) {
+        <img [src]="user().profileImageUrl" [alt]="user().name" class="h-full w-full object-cover object-center" />
+      } @else {
+        <ng-icon name="lucideUser" class="text-4xl sm:text-5xl" />
+      }
+    </div>
+
+    <div class="min-w-0 space-y-1">
+      <h2 class="wrap-break-words text-xl font-bold">
+        {{ user().name }}
+      </h2>
+
+      <p class="break-all font-mono text-sm text-muted-foreground">
+        @{{ user().username }}
+      </p>
+    </div>
+
+    <div class="flex flex-wrap justify-center gap-2">
+      <span class="rounded-full bg-primary/10 px-3 py-1 text-xs font-bold text-primary">
+        {{ user().role }}
+      </span>
+
+      <span
+        class="inline-flex items-center gap-1.5 rounded-full bg-emerald-100 px-3 py-1 text-xs font-bold text-emerald-700"
+      >
+        <span class="size-1.5 rounded-full bg-current"></span>
+        {{ user().status }}
+      </span>
+    </div>
+
+    <div class="flex w-full flex-col gap-2 border-t pt-4 text-left text-sm">
+      <a
+        [href]="'mailto:' + user().email"
+        class="break-all rounded-md border bg-muted/50 px-3 py-2 hover:border-primary"
+      >
+        {{ user().email }}
+      </a>
+
+      <a
+        [href]="'tel:' + user().phoneNumber"
+        class="break-all rounded-md border bg-muted/50 px-3 py-2 hover:border-primary"
+      >
+        {{ user().phoneNumber || '-' }}
+      </a>
+    </div>
+  </aside>
+
+  <div class="min-w-0 space-y-6">
+    <section
+      class="rounded-xl border bg-card"
+      [formGroup]="editForm()"
+    >
+      <div class="border-b px-6 py-4">
+        <h3 class="font-semibold">
+          Account Information
+        </h3>
+      </div>
+    
+      <div class="grid sm:grid-cols-2">
+        @for (field of fields; track field.key) {
+          <div class="min-w-0 space-y-1 border-b px-6 py-4">
+            <p class="text-xs font-bold uppercase tracking-wider text-muted-foreground">
+              {{ field.label }}
+            </p>
+            
+            @if (isEditing() && field.key === 'phoneNumber') {
+              <input
+                type="text"
+                formControlName="phoneNumber"
+                class="w-full rounded-md border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+              />
+            } @else if (isEditing() && field.key === 'role') {
+              <select
+                formControlName="role"
+                class="w-full rounded-md border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+              >
+                <option value="ADMIN">Admin</option>
+                <option value="EDITOR">Editor</option>
+                <option value="VIEWER">Viewer</option>
+              </select>
+            } @else if (isEditing() && field.key === 'status') {
+              <select
+                formControlName="status"
+                class="w-full rounded-md border bg-background px-3 py-2 text-sm outline-none focus:border-primary"
+              >
+                <option value="ACTIVE">Active</option>
+                <option value="NONACTIVE">NonActive</option>
+              </select>
+            } @else {
+              <p class="break-all font-medium">
+                {{ user()[field.key] || '-' }}
+              </p>
+            }
+          </div>
+        }
+      </div>
+    </section>
+
+    <section class="rounded-xl border bg-card">
+      <div class="border-b px-6 py-4">
+        <h3 class="font-semibold">
+          Access &amp; Status
+        </h3>
+      </div>
+
+      <div class="grid gap-3 p-6 sm:grid-cols-2">
+        <div class="rounded-lg border bg-muted/50 p-4">
+          <p class="text-sm font-semibold">
+            Role: {{ user().role }}
+          </p>
+
+          <p class="mt-1 text-sm text-muted-foreground">
+            User access level is {{ user().role }}.
+          </p>
+        </div>
+
+        <div class="rounded-lg border bg-muted/50 p-4">
+          <p class="text-sm font-semibold">
+            Status: {{ user().status }}
+          </p>
+
+          <p class="mt-1 text-sm text-muted-foreground">
+            Current account status is {{ user().status }}.
+          </p>
+        </div>
+      </div>
+    </section>
+  </div>
+</div>
