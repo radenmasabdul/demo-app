@@ -10,10 +10,11 @@ import { CreateDialog } from '../components/create-dialog/create-dialog';
 import { ApiState } from '../../../shared/components/api-state/api-state';
 import { AlertService } from '../../../core/services/alert.service';
 import { AlertDialogService } from '../../../core/services/alert-dialog.service';
+import { PageHeader } from '../../../shared/components/page-header/page-header';
 
 @Component({
   selector: 'app-pages',
-  imports: [Search, Select, Table, CreateDialog, ApiState],
+  imports: [Search, Select, Table, CreateDialog, ApiState, PageHeader],
   templateUrl: './pages.html',
   styleUrl: './pages.css',
 })
