@@ -1,13 +1,40 @@
-<a [routerLink]="to()"
-  class="group inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-all duration-300 hover:text-foreground">
+<div class="flex items-center justify-between">
+  <a
+    [routerLink]="to()"
+    class="group inline-flex items-center gap-2 text-sm font-medium text-muted-foreground transition-all duration-300 hover:text-foreground"
+  >
+    @if (isBack()) {
+      <ng-icon name="lucideArrowLeft" class="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1" />
+    }
+    
+    <span>{{ label() }}</span>
 
-  @if (isBack()) {
-    <ng-icon name="lucideArrowLeft" class="h-4 w-4 transition-transform duration-300 group-hover:-translate-x-1" />
+    @if (!isBack()) {
+      <ng-icon name="lucideArrowRight" class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+    }
+  </a>
+
+  @if (isEditing()) {
+    <div class="flex items-center gap-2">
+      <button
+        type="button"
+        class="cursor-pointer rounded-md border px-4 py-2 text-sm font-medium transition-colors hover:bg-muted"
+        [disabled]="isSaving()"
+        (click)="cancelClick.emit()"
+      >
+        Cancel
+      </button>
+
+      <button
+        type="button"
+        class="cursor-pointer rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
+        [disabled]="isSaving()"
+        (click)="saveClick.emit()"
+      >
+        {{ isSaving() ? 'Saving...' : 'Save' }}
+      </button>
+    </div>
+  } @else {
+    <app-button type="edit" (click)="editClick.emit()" />
   }
-
-  <span>{{ label() }}</span>
-
-  @if (!isBack()) {
-    <ng-icon name="lucideArrowRight" class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-  }
-</a>
+</div>
